@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -23,32 +23,33 @@ jobs:
       - name: 1. Checkout Repositorio
         uses: actions/checkout@v4
 
-      - name: 2. Configurar Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: 3. Configurar Flutter SDK
+      - name: 2. Configurar Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.19.x'
 
-      - name: 4. Instalar Dependencias
+      - name: 3. Obtener Dependencias
         run: flutter pub get
 
-      - name: 5. Compilar Flutter Web (Release Mode con base-href)
+      - name: 4. Compilar Flutter Web (Release Mode)
         run: |
           flutter build web --release --base-href "/${{ github.event.repository.name }}/"
           touch build/web/.nojekyll
+          cp web/index.html build/web/preview.html || true
 
-      - name: 6. Configurar Artifact GitHub Pages
+      - name: 5. Desplegar en la rama gh-pages (peaceiris/actions-gh-pages)
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
+          publish_branch: gh-pages
+          force_orphan: true
+
+      - name: 6. Configurar Artifact GitHub Pages Oficial
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'build/web'
 
-      - name: 7. Desplegar en GitHub Pages ($0 USD Hosting)
+      - name: 7. Desplegar en GitHub Pages Oficial
         id: deployment
         uses: actions/deploy-pages@v4
-
