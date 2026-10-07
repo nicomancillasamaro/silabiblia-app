@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SilaBiblia - Conciencia Fonológica y Relatos Bíblicos 📖✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-blue: #3a86ff;
+      --secondary-gold: #ffbe0b;
+      --accent-pink: #ff006e;
+      --accent-purple: #8338ec;
+      --emerald-green: #06d6a0;
+      --warm-orange: #fb5607;
+      --bg-light: #eef5fc;
+      --dark-slate: #1e293b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background: var(--bg-light);
+      color: var(--dark-slate);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--primary-blue);
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stars-badge {
+      background: var(--secondary-gold);
+      color: var(--dark-slate);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .parent-btn {
+      background: rgba(255,255,255,0.2);
+      border: 2px solid white;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .parent-btn:hover {
+      background: white;
+      color: var(--primary-blue);
+    }
+
+    main {
+      flex: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 24px 16px;
+    }
+
+    .map-banner {
+      background: white;
+      border-radius: 24px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 8px 24px rgba(58, 134, 255, 0.08);
+      margin-bottom: 24px;
+    }
+
+    .world-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin: 24px 0 12px;
+      padding: 10px 16px;
+      border-radius: 16px;
+      display: inline-block;
+    }
+
+    .w1 { background: rgba(6, 214, 160, 0.15); color: #059669; }
+    .w2 { background: rgba(58, 134, 255, 0.15); color: #2563eb; }
+    .w3 { background: rgba(131, 56, 236, 0.15); color: #7c3aed; }
+
+    .level-card {
+      background: white;
+      border-radius: 20px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 2px solid rgba(0,0,0,0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .level-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    }
+
+    .level-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .level-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(255, 190, 11, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    .play-btn {
+      background: var(--emerald-green);
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: 28px;
+      max-width: 600px;
+      width: 100%;
+      padding: 28px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .game-canvas-area {
+      background: linear-gradient(180deg, #70a1ff 0%, #1e90ff 100%);
+      border-radius: 24px;
+      padding: 24px;
+      color: white;
+      margin-top: 16px;
+    }
+
+    .vowels-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+
+    .vowel-draggable {
+      width: 64px;
+      height: 64px;
+      background: var(--secondary-gold);
+      color: var(--dark-slate);
+      border-radius: 50%;
+      font-size: 32px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+
+    .ark-dropzone {
+      background: linear-gradient(135deg, #8d5b4c 0%, #5c3a21 100%);
+      border: 3px dashed var(--secondary-gold);
+      border-radius: 24px;
+      padding: 32px 16px;
+      font-size: 20px;
+      font-weight: 700;
+      margin-top: 16px;
+    }
+
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .memory-card {
+      height: 80px;
+      background: var(--secondary-gold);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--dark-slate);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .memory-card.flipped {
+      background: white;
+    }
+
+    .memory-card.matched {
+      background: var(--emerald-green);
+      color: white;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span>📖✨</span>
+      <span>SilaBiblia</span>
+    </div>
+    <div class="header-actions">
+      <div class="stars-badge">
+        <span>⭐</span>
+        <span id="starCount">0</span>
+      </div>
+      <button class="parent-btn" onclick="openParentGate()">Zona Padres 🔒</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="map-banner">
+      <span style="font-size: 40px;">🕊️</span>
+      <div>
+        <h2 style="font-weight: 800;">Aprende a Leer con la Biblia (Persistencia Local Hive / WebStorage)</h2>
+        <p style="color: #64748b;">Tu avance y estrellas se guardan automáticamente en tu dispositivo sin necesidad de internet.</p>
+      </div>
+    </div>
+
+    <!-- MUNDO 1 -->
+    <div class="world-title w1">Mundo 1: Vocales y Creación (Génesis) 🌳</div>
+    <div class="level-card">
+      <div class="level-info">
+        <div class="level-icon">🚢</div>
+        <div>
+          <h3>Vocal A - El Arca de Noé</h3>
+          <p style="color: #64748b; font-size: 14px;">Dios salvó a Noé y a los animales.</p>
+        </div>
+      </div>
+      <button class="play-btn" onclick="playLevel('A', 'Arca de Noé')">Jugar</button>
+    </div>
+
+    <!-- MUNDO 2 -->
+    <div class="world-title w2">Mundo 2: Consonantes Directas (M, P, S, L) 🕊️</div>
+    <div class="level-card">
+      <div class="level-info">
+        <div class="level-icon">🧩</div>
+        <div>
+          <h3>Sílabas MA, PA, SA, LA - Memorama Bíblico</h3>
+          <p style="color: #64748b; font-size: 14px;">Empareja las sílabas con Maná, Paloma, Salmo y Luz.</p>
+        </div>
+      </div>
+      <button class="play-btn" style="background: var(--primary-blue);" onclick="openMemorama()">Jugar Memorama</button>
+    </div>
+
+    <!-- MUNDO 3 -->
+    <div class="world-title w3">Mundo 3: Sílabas Trabadas (CR, TR, CL) ✝️</div>
+    <div class="level-card">
+      <div class="level-info">
+        <div class="level-icon">🧱</div>
+        <div>
+          <h3>Sílabas Trabadas - Murallas de Jericó</h3>
+          <p style="color: #64748b; font-size: 14px;">Une consonante doble + vocal para derribar el muro.</p>
+        </div>
+      </div>
+      <button class="play-btn" style="background: var(--accent-purple);" onclick="openJerichoPuzzle()">Jugar Rompecabezas</button>
+    </div>
+  </main>
+
+  <!-- Modal Minijuego 1 -->
+  <div class="overlay" id="gameModal">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeModal('gameModal')">✖</button>
+      <h2 id="gameTitle">Minijuego 1: Vocal A</h2>
+      <p id="gameInstructions" style="margin: 8px 0; color: #64748b;">Arrastra las vocales correctas al Arca de Noé 🚢</p>
+
+      <div class="game-canvas-area">
+        <div class="vowels-row" id="vowelsContainer"></div>
+
+        <div class="ark-dropzone" id="arkDropzone" ondragover="event.preventDefault();" ondrop="handleDrop(event)">
+          <div style="font-size: 48px;">🚢</div>
+          <div>Arrastra la vocal objetivo aquí</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Minijuego 2 -->
+  <div class="overlay" id="memoramaModal">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeModal('memoramaModal')">✖</button>
+      <h2>Minijuego 2: Memorama Silábico 🧩</h2>
+      <p style="margin: 8px 0; color: #64748b;">Encuentra las parejas de sílabas y palabras bíblicas.</p>
+      <div class="memory-grid" id="memoryGrid"></div>
+    </div>
+  </div>
+
+  <!-- Modal Minijuego 3 -->
+  <div class="overlay" id="jerichoModal">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeModal('jerichoModal')">✖</button>
+      <h2>Minijuego 3: Muralla de Jericó 🧱</h2>
+      <p style="margin: 8px 0; color: #64748b;">Selecciona la vocal para formar "CRUZ" (CR + ?)</p>
+
+      <div style="background: #8d5b4c; border: 3px solid var(--secondary-gold); border-radius: 20px; padding: 24px; color: white; margin: 16px 0;">
+        <div style="font-size: 54px;" id="wallState">🧱🧱🧱</div>
+        <h1 style="font-size: 40px; margin-top: 12px;">CR + <span id="selectedVowelSlot">?</span> = <span id="resultWord">?</span></h1>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button class="play-btn" style="font-size: 24px;" onclick="tryJerichoVowel('A')">A</button>
+        <button class="play-btn" style="font-size: 24px;" onclick="tryJerichoVowel('E')">E</button>
+        <button class="play-btn" style="font-size: 24px;" onclick="tryJerichoVowel('I')">I</button>
+        <button class="play-btn" style="font-size: 24px;" onclick="tryJerichoVowel('O')">O</button>
+        <button class="play-btn" style="font-size: 24px; background: var(--secondary-gold); color: black;" onclick="tryJerichoVowel('U')">U</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Parental Gate -->
+  <div class="overlay" id="parentGateModal">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeModal('parentGateModal')">✖</button>
+      <div style="font-size: 48px;">🔒</div>
+      <h2 style="margin-top: 8px;">Zona de Padres (COPPA)</h2>
+      <p style="margin: 8px 0; color: #64748b;">Resuelve la siguiente operación para ingresar:</p>
+      <h1 id="mathChallenge" style="color: var(--primary-blue); margin: 16px 0;">4 + 3 = ?</h1>
+      <input type="number" id="gateInput" style="font-size: 24px; text-align: center; width: 120px; padding: 8px; border-radius: 12px; border: 2px solid #cbd5e1;" placeholder="?">
+      <div style="margin-top: 20px;">
+        <button class="play-btn" onclick="verifyParentGate()">Ingresar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Parent Dashboard -->
+  <div class="overlay" id="parentDashboardModal">
+    <div class="modal-box" style="text-align: left;">
+      <button class="close-btn" onclick="closeModal('parentDashboardModal')">✖</button>
+      <h2>Panel de Control Familiar 📊</h2>
+      <p style="margin-bottom: 16px; color: #64748b;">Información de progreso y almacenamiento offline persistente.</p>
+      
+      <div style="background: #f1f5f9; padding: 16px; border-radius: 16px; margin-bottom: 16px;">
+        <h3>💾 Almacenamiento Local (Hive / localStorage)</h3>
+        <p style="font-size: 14px; margin-top: 4px;">Estado Actual: <strong style="color: #059669;">Persistente sin internet (synced: false)</strong></p>
+        <p style="font-size: 13px; color: #64748b; margin-top: 4px;" id="storedStarsLabel">Estrellas en memoria local: 0</p>
+        <button class="play-btn" style="margin-top: 12px; padding: 6px 16px; font-size: 14px;" onclick="alert('Datos locales actualizados en el almacenamiento permanente.')">Guardar Cambios</button>
+      </div>
+
+      <div style="background: #e0f2fe; padding: 16px; border-radius: 16px;">
+        <h3 style="color: var(--primary-blue);">🕊️ Donaciones Voluntarias</h3>
+        <p style="font-size: 14px; color: #334155; margin-top: 4px;">SilaBiblia es 100% gratuito sin publicidad de terceros para protección infantil. Si deseas apoyar la creación de nuevos contenidos:</p>
+        <button class="play-btn" style="margin-top: 12px; background: var(--warm-orange);" onclick="alert('Redirigiendo a pasarela de donaciones voluntarias (Stripe / Buy Me a Coffee)...')">Apoyar con Donación</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let totalStars = parseInt(localStorage.getItem('silabiblia_stars') || '0');
+    document.getElementById('starCount').innerText = totalStars;
+    document.getElementById('storedStarsLabel').innerText = `Estrellas en memoria local: ${totalStars}`;
+
+    let currentTargetPhoneme = 'A';
+    let gateAnswer = 7;
+    let memFirstCard = null;
+    let memMatches = 0;
+
+    function saveLocalStars(newStars) {
+      totalStars += newStars;
+      localStorage.setItem('silabiblia_stars', totalStars.toString());
+      document.getElementById('starCount').innerText = totalStars;
+      document.getElementById('storedStarsLabel').innerText = `Estrellas en memoria local: ${totalStars}`;
+    }
+
+    function playAudioPhoneme(phoneme) {
+      try {
+        const synth = window.speechSynthesis;
+        if (synth) {
+          const utter = new SpeechSynthesisUtterance(phoneme);
+          utter.lang = 'es-ES';
+          utter.rate = 0.8;
+          synth.speak(utter);
+        }
+      } catch(e) {}
+    }
+
+    function playLevel(phoneme, name) {
+      currentTargetPhoneme = phoneme;
+      document.getElementById('gameTitle').innerText = `Minijuego 1: Phonema "${phoneme}" (${name})`;
+      playAudioPhoneme(phoneme);
+
+      const container = document.getElementById('vowelsContainer');
+      container.innerHTML = '';
+      
+      const vowels = ['A', 'E', 'I', 'O', 'U', 'MA', 'CRU'];
+      const targetList = [phoneme, phoneme, phoneme];
+      vowels.forEach(v => { if (v !== phoneme) targetList.push(v); });
+      targetList.sort(() => Math.random() - 0.5);
+
+      targetList.forEach(v => {
+        const div = document.createElement('div');
+        div.className = 'vowel-draggable';
+        div.innerText = v;
+        div.draggable = true;
+        div.ondragstart = (e) => {
+          e.dataTransfer.setData('text', v);
+          playAudioPhoneme(v);
+        };
+        container.appendChild(div);
+      });
+
+      document.getElementById('gameModal').classList.add('active');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const draggedPhoneme = e.dataTransfer.getData('text');
+      if (draggedPhoneme === currentTargetPhoneme) {
+        saveLocalStars(3);
+        playAudioPhoneme('Excelente! ' + currentTargetPhoneme);
+        alert(`🎉 ¡Fantástico! Subiste la vocal "${draggedPhoneme}" al Arca de Noé. ¡Guardado localmente (+3 estrellas)!`);
+        closeModal('gameModal');
+      } else {
+        playAudioPhoneme('Intenta de nuevo');
+        alert(`Buscamos el fonema "${currentTargetPhoneme}". ¡Inténtalo de nuevo!`);
+      }
+    }
+
+    function openMemorama() {
+      memMatches = 0;
+      memFirstCard = null;
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+
+      const items = [
+        { id: 'MA', text: 'MA' }, { id: 'MA', text: '🍞 Maná' },
+        { id: 'PA', text: 'PA' }, { id: 'PA', text: '🕊️ Paloma' },
+        { id: 'SA', text: 'SA' }, { id: 'SA', text: '🎶 Salmo' },
+        { id: 'LA', text: 'LA' }, { id: 'LA', text: '💡 Luz' }
+      ];
+      items.sort(() => Math.random() - 0.5);
+
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'memory-card';
+        card.innerText = '❓';
+        card.dataset.id = item.id;
+        
+        card.onclick = () => {
+          if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+          playAudioPhoneme(item.id);
+          card.classList.add('flipped');
+          card.innerText = item.text;
+
+          if (!memFirstCard) {
+            memFirstCard = card;
+          } else {
+            if (memFirstCard.dataset.id === card.dataset.id && memFirstCard !== card) {
+              memFirstCard.classList.add('matched');
+              card.classList.add('matched');
+              memMatches++;
+              memFirstCard = null;
+
+              if (memMatches === 4) {
+                saveLocalStars(3);
+                setTimeout(() => {
+                  alert('🎉 ¡Completaste el Memorama Silábico! Guardado permanentemente (+3 Estrellas ⭐)');
+                  closeModal('memoramaModal');
+                }, 400);
+              }
+            } else {
+              const prev = memFirstCard;
+              memFirstCard = null;
+              setTimeout(() => {
+                prev.classList.remove('flipped');
+                card.classList.remove('flipped');
+                prev.innerText = '❓';
+                card.innerText = '❓';
+              }, 800);
+            }
+          }
+        };
+
+        grid.appendChild(card);
+      });
+
+      document.getElementById('memoramaModal').classList.add('active');
+    }
+
+    function openJerichoPuzzle() {
+      document.getElementById('wallState').innerText = '🧱🧱🧱';
+      document.getElementById('selectedVowelSlot').innerText = '?';
+      document.getElementById('resultWord').innerText = '?';
+      document.getElementById('jerichoModal').classList.add('active');
+    }
+
+    function tryJerichoVowel(vowel) {
+      playAudioPhoneme('CRU ' + vowel);
+      if (vowel === 'U') {
+        document.getElementById('wallState').innerText = '🏰✨ (¡Derribada!)';
+        document.getElementById('selectedVowelSlot').innerText = 'U';
+        document.getElementById('resultWord').innerText = 'CRUZ ✝️';
+        saveLocalStars(3);
+        setTimeout(() => {
+          alert('🎉 ¡Formaste "CRUZ" y derribaste la muralla! Guardado localmente (+3 Estrellas) ⭐');
+          closeModal('jerichoModal');
+        }, 500);
+      } else {
+        alert(`Formaste "CR${vowel}". Para formar la palabra "CRUZ" necesitas la vocal "U". ¡Inténtalo de nuevo!`);
+      }
+    }
+
+    function openParentGate() {
+      const n1 = Math.floor(Math.random() * 7) + 2;
+      const n2 = Math.floor(Math.random() * 7) + 2;
+      gateAnswer = n1 + n2;
+      document.getElementById('mathChallenge').innerText = `${n1} + ${n2} = ?`;
+      document.getElementById('gateInput').value = '';
+      document.getElementById('parentGateModal').classList.add('active');
+    }
+
+    function verifyParentGate() {
+      const val = parseInt(document.getElementById('gateInput').value);
+      if (val === gateAnswer) {
+        closeModal('parentGateModal');
+        document.getElementById('parentDashboardModal').classList.add('active');
+      } else {
+        alert('Respuesta incorrecta. Intenta nuevamente.');
+        openParentGate();
+      }
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+  </script>
+</body>
+</html>

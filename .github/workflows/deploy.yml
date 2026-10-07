@@ -1,0 +1,55 @@
+name: Deploy SilaBiblia Web App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout Repositorio
+        uses: actions/checkout@v4
+
+      - name: 2. Configurar Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: 3. Configurar Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: '3.19.x'
+
+      - name: 4. Instalar Dependencias
+        run: |
+          cd silabiblia-app || true
+          flutter pub get
+
+      - name: 5. Compilar Flutter Web (Release Mode)
+        run: |
+          cd silabiblia-app || true
+          flutter build web --release --base-href "/${{ github.event.repository.name }}/" || flutter build web --release
+
+      - name: 6. Configurar Artifact GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'silabiblia-app/build/web'
+
+      - name: 7. Desplegar en GitHub Pages ($0 USD Hosting)
+        id: deployment
+        uses: actions/deploy-pages@v4
