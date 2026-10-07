@@ -36,20 +36,19 @@ jobs:
           flutter-version: '3.19.x'
 
       - name: 4. Instalar Dependencias
-        run: |
-          cd silabiblia-app || true
-          flutter pub get
+        run: flutter pub get
 
-      - name: 5. Compilar Flutter Web (Release Mode)
+      - name: 5. Compilar Flutter Web (Release Mode con base-href)
         run: |
-          cd silabiblia-app || true
-          flutter build web --release --base-href "/${{ github.event.repository.name }}/" || flutter build web --release
+          flutter build web --release --base-href "/${{ github.event.repository.name }}/"
+          touch build/web/.nojekyll
 
       - name: 6. Configurar Artifact GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'silabiblia-app/build/web'
+          path: 'build/web'
 
       - name: 7. Desplegar en GitHub Pages ($0 USD Hosting)
         id: deployment
         uses: actions/deploy-pages@v4
+
